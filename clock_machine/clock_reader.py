@@ -4,12 +4,14 @@ import time
 import click
 import requests
 
+from .screen import Screen
 from .buzzer import Buzzer
 from .rfid import RFID
 
 
 class ClockReader:
     buzzer = Buzzer()
+    screen = Screen()
 
     CLOCK_URL = "http://127.0.0.1:8000/clock_time"
     MAKE_CARD_URL = "http://127.0.0.1:8000/make_card"
@@ -19,15 +21,18 @@ class ClockReader:
     OUT = "out"
 
     def error(self, e):
-        click.echo(f"Error: {e}")
+        self.screen_write("Error: ", str(e))
+        click.echo(str(e))
         self.buzzer.buzz_err()
-        time.sleep(0.5)
+        time.sleep(3)
 
     def read(self):
         card_id, text = self.reader.read()
         click.echo(card_id)
         click.echo(text)
+        self.screen_write("Reading...")
         card_data = json.loads(text)
+        self.screen_write(card_data["name"], "Wait...")
         self.buzzer.buzz_read()
         return self.clock_request(card_id, card_data)
 
@@ -37,14 +42,14 @@ class ClockReader:
             self.signal_clock_in(response_data["employee"], response_data["time"])
         else:
             self.signal_clock_out(response_data["employee"], response_data["time"])
-        time.sleep(1)
+        time.sleep(3)
 
     def signal_clock_in(self, name, clock_time):
-        click.echo(f"{name} clocked IN at {clock_time}")
+        self.screen_write(name, "Clocked IN")
         self.buzzer.buzz_in()
 
     def signal_clock_out(self, name, clock_time):
-        click.echo(f"{name} clocked OUT at {clock_time}")
+        self.screen_write(name, "Clocked OUT")
         self.buzzer.buzz_out()
 
     def parse_card_read(self, card_id, card_data):
@@ -61,7 +66,7 @@ class ClockReader:
 
     def make_card(self):
         employee_id = click.prompt("Employee ID", type=int)
-        click.echo("Scan RFID card...")
+        self.screen_write("Scan RFID card...")
         card_id, text = self.reader.read()
         self.buzzer.buzz_read()
         request_data = {"employee_id": employee_id, "card_id": card_id}
@@ -72,12 +77,17 @@ class ClockReader:
             self.reader.write(card_text)
             card_id, written_text = self.reader.read()
             if written_text != written_text:
-                click.echo("Card write error, please try again.")
+                self.screen_write("Card write error, please try again.")
                 self.buzzer.buzz_err()
             else:
-                click.echo(f"{written_text} written to card")
-                click.echo("Card write sucessful")
+                self.screen_write(f"{written_text} written to card")
+                self.screen_write("Card write sucessful")
                 self.buzzer.buzz_in()
         else:
-            click.echo(f"Request returned {response.text}")
+            self.screen_write(f"Request returned {response.text}")
             self.buzzer.buzz_err()
+
+    def screen_write(self, line_1="", line_2=""):
+        click.echo(f"{line_1}\t{line_2}")
+        self.screen.write(f"{line_1}\t{line_2}")
+        self.screen.write(line_1, line_2)

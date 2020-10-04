@@ -5,7 +5,7 @@ import RPi.GPIO as GPIO
 
 
 class Buzzer:
-    pin_number = 15
+    pin_number = 22
 
     def __init__(self):
         GPIO.setup(self.pin_number, GPIO.OUT)
