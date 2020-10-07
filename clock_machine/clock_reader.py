@@ -13,12 +13,14 @@ class ClockReader:
     buzzer = Buzzer()
     screen = Screen()
 
-    CLOCK_URL = "http://127.0.0.1:8000/clock_time"
-    MAKE_CARD_URL = "http://127.0.0.1:8000/make_card"
     reader = RFID()
 
     IN = "in"
     OUT = "out"
+
+    def __init__(self, server):
+        self.CLOCK_URL = f"http://{server}/clock_time"
+        self.MAKE_CARD_URL = f"http://{server}/make_card"
 
     def error(self, e):
         self.screen_write("Error: ", str(e))

@@ -16,8 +16,9 @@ def cli():
 
 
 @cli.command()
-def clock_machine():
-    clock_reader = ClockReader()
+@click.argument('server')
+def clock_machine(server):
+    clock_reader = ClockReader(server)
     ip_address = get_ip_address()
     try:
         while True:
@@ -33,6 +34,7 @@ def clock_machine():
 
 
 @cli.command()
-def make_card():
-    clock_reader = ClockReader()
+@click.argument('server')
+def make_card(server):
+    clock_reader = ClockReader(server)
     clock_reader.make_card()
