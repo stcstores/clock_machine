@@ -90,7 +90,7 @@ class ClockReader:
             self.screen_write(f"Request returned {response.text}")
             self.buzzer.buzz_err()
 
-    def screen_write(self, line_1="", line_2=""):
+    def screen_write(self, line_1="", line_2="", line_3="", line_4=""):
         click.echo(f"{line_1}\t{line_2}")
         self.screen.write(f"{line_1}\t{line_2}")
-        self.screen.write(line_1, line_2)
+        self.screen.write(line_1, line_2, line_3, line_4)
