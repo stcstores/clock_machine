@@ -33,9 +33,10 @@ class ClockReader:
         click.echo(card_id)
         click.echo(text)
         self.screen_write("Reading...")
+        self.buzzer.buzz_read()
         card_data = json.loads(text)
         self.screen_write(card_data["name"], "Wait...")
-        self.buzzer.buzz_read()
+        self.buzzer.buzz_stop()
         return self.clock_request(card_id, card_data)
 
     def clock_success(self, response):
