@@ -1,6 +1,6 @@
-from board import SCL, SDA
 import busio
-from oled_text import OledText, BigLine, SmallLine
+from board import SCL, SDA
+from oled_text import BigLine, OledText, SmallLine
 
 
 class Screen:

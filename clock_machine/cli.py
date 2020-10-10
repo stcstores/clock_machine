@@ -1,8 +1,9 @@
+import subprocess
+
 import click
 import RPi.GPIO as GPIO
 
 from .clock_reader import ClockReader
-import subprocess
 
 
 def get_ip_address():
@@ -16,7 +17,7 @@ def cli():
 
 
 @cli.command()
-@click.argument('server')
+@click.argument("server")
 def clock_machine(server):
     clock_reader = ClockReader(server)
     ip_address = get_ip_address()
@@ -34,7 +35,7 @@ def clock_machine(server):
 
 
 @cli.command()
-@click.argument('server')
+@click.argument("server")
 def make_card(server):
     clock_reader = ClockReader(server)
     clock_reader.make_card()

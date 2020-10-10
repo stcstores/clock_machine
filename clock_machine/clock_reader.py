@@ -4,9 +4,9 @@ import time
 import click
 import requests
 
-from .screen import Screen
 from .buzzer import Buzzer
 from .rfid import RFID
+from .screen import Screen
 
 
 class ClockReader:
