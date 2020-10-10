@@ -4,19 +4,20 @@ import time
 import click
 import requests
 
-from .buzzer import Buzzer
-from .rfid import RFID
-from .screen import Screen
+from .screen import Screen  # noqa isort:skip
+from .rfid import RFID  # noqa isort:skip
+from .buzzer import Buzzer  # noqa isort:skip
 
 
 class ClockReader:
     buzzer = Buzzer()
     screen = Screen()
-
     reader = RFID()
 
     IN = "in"
     OUT = "out"
+
+    timeout = 3
 
     def __init__(self, server):
         self.CLOCK_URL = f"http://{server}/clock_time"
@@ -30,13 +31,13 @@ class ClockReader:
 
     def read(self):
         card_id, text = self.reader.read()
+        self.buzzer.buzz_read()
         click.echo(card_id)
         click.echo(text)
         self.screen_write("Reading...")
-        self.buzzer.buzz_read()
+        self.buzzer.buzz_stop()
         card_data = json.loads(text)
         self.screen_write(card_data["name"], "Wait...")
-        self.buzzer.buzz_stop()
         return self.clock_request(card_id, card_data)
 
     def clock_success(self, response):
@@ -56,12 +57,11 @@ class ClockReader:
         self.buzzer.buzz_out()
 
     def parse_card_read(self, card_id, card_data):
-        name = card_data["name"]
-        return {"card_id": card_id, "name": name}
+        return {"card_id": card_id, "name": card_data["name"]}
 
     def clock_request(self, card_id, card_data):
         request_data = self.parse_card_read(card_id, card_data)
-        response = requests.post(self.CLOCK_URL, request_data)
+        response = requests.post(self.CLOCK_URL, request_data, timeout=self.timeout)
         if response.status_code == 200:
             return response
         else:
@@ -73,7 +73,7 @@ class ClockReader:
         card_id, text = self.reader.read()
         self.buzzer.buzz_read()
         request_data = {"employee_id": employee_id, "card_id": card_id}
-        response = requests.post(self.MAKE_CARD_URL, request_data)
+        response = requests.post(self.MAKE_CARD_URL, request_data, timeout=self.timeout)
         if response.status_code == 200:
             name = response.json()["name"]
             card_text = json.dumps({"name": name})
