@@ -2,6 +2,7 @@ import click
 import RPi.GPIO as GPIO
 
 from .clock_reader import ClockReader
+from .screen import Screen
 
 
 @click.group()
@@ -33,3 +34,9 @@ def clock_machine(server):
 def make_card(server):
     clock_reader = ClockReader(server)
     clock_reader.make_card()
+
+
+@cli.command()
+def clear_screen():
+    screen = Screen()
+    screen.blank()

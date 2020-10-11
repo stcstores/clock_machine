@@ -5,6 +5,7 @@ Description=Clocking in machine
 User=pi
 WorkingDirectory=/home/pi/clock_machine
 ExecStart=/home/pi/clock_machine/env/bin/clock_machine clock-machine 127.0.0.1:8000
+ExecStop=/home/pi/clock_machine/env/bin/clock_machine clear-screen
 Restart=always
 
 [Install]
