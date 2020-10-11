@@ -23,7 +23,7 @@ def clock_machine(server):
     ip_address = get_ip_address()
     try:
         while True:
-            clock_reader.screen_write("Ready...", '', '', ip_address)
+            clock_reader.screen_write(line_1="Ready...", line_4=ip_address)
             try:
                 response = clock_reader.read()
             except Exception as e:
@@ -31,6 +31,8 @@ def clock_machine(server):
             else:
                 clock_reader.clock_success(response)
     finally:
+        clock_reader.screen.blank()
+        clock_reader.screen.write()
         GPIO.cleanup()
 
 

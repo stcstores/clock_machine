@@ -14,9 +14,27 @@ class Screen:
             3: SmallLine(0, 20, size=10, font="FreeSans.ttf"),
             4: SmallLine(0, 20, size=10, font="FreeSans.ttf"),
         }
+        self.oled.auto_show = False
+        self.blank()
 
-    def write(self, line_1="", line_2="", line_3="", line_4=""):
-        self.oled.text(line_1, 1)
-        self.oled.text(line_2, 2)
-        self.oled.text(line_3, 3)
-        self.oled.text(line_4, 4)
+    def write(self, line_1=None, line_2=None, line_3=None, line_4=None):
+        if line_1:
+            self.line_1 = line_1
+        if line_2:
+            self.line_2 = line_2
+        if line_3:
+            self.line_3 = line_3
+        if line_4:
+            self.line_4 = line_4
+        self.oled.text(self.line_1, 1)
+        self.oled.text(self.line_2, 2)
+        self.oled.text(self.line_3, 3)
+        self.oled.text(self.line_4, 4)
+        self.oled.show()
+
+    def blank(self):
+        self.line_1 = ""
+        self.line_2 = ""
+        self.line_3 = ""
+        self.line_4 = ""
+        self.write()

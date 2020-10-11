@@ -92,5 +92,4 @@ class ClockReader:
 
     def screen_write(self, line_1="", line_2="", line_3="", line_4=""):
         click.echo(f"{line_1}\t{line_2}")
-        self.screen.write(f"{line_1}\t{line_2}")
-        self.screen.write(line_1, line_2, line_3, line_4)
+        self.screen.write(line_1=line_1, line_2=line_2, line_3=line_3, line_4=line_4)
