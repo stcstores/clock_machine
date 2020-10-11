@@ -1,0 +1,11 @@
+[Unit]
+Description=Clocking in machine
+
+[Service]
+User=pi
+WorkingDirectory=/home/pi/clock_machine
+ExecStart=/home/pi/clock_machine/env/bin/clock_machine clock-machine 127.0.0.1:8000
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
