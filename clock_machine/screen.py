@@ -1,4 +1,5 @@
 import subprocess
+import time
 
 import busio
 from board import SCL, SDA
@@ -9,7 +10,6 @@ class Screen:
     i2c = busio.I2C(SCL, SDA)
 
     def __init__(self):
-        self.ip_address = self.get_ip_address()
         self.oled = OledText(self.i2c, 128, 64)
         self.oled.layout = {
             1: BigLine(0, 0, size=15, font="FreeSans.ttf"),
@@ -30,7 +30,7 @@ class Screen:
         self.oled.text(self.line_1, 1)
         self.oled.text(self.line_2, 2)
         self.oled.text(self.line_3, 3)
-        self.oled.text(self.ip_address, 4)
+        self.oled.text(self.get_ip_address(), 4)
         self.oled.show()
 
     def blank(self):
@@ -42,4 +42,12 @@ class Screen:
 
     def get_ip_address(self):
         cmd = "hostname -I | cut -d' ' -f1"
-        return subprocess.check_output(cmd, shell=True).decode("utf-8")
+        ip_address = ""
+        for i in range(100):
+            ip_address = (
+                subprocess.check_output(cmd, shell=True).decode("utf-8").strip()
+            )
+            if ip_address:
+                return ip_address
+            time.sleep(0.25)
+        return "No IP address found"
