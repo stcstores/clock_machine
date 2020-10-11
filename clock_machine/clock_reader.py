@@ -30,6 +30,7 @@ class ClockReader:
         time.sleep(3)
 
     def read(self):
+        self.screen_write("Ready...", "")
         card_id, text = self.reader.read()
         self.buzzer.buzz_read()
         click.echo(card_id)
