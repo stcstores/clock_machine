@@ -1,7 +1,10 @@
+import time
+
 import click
 import RPi.GPIO as GPIO
 
 from .clock_reader import ClockReader
+from .rfid import RFID
 from .screen import Screen
 
 
@@ -40,3 +43,32 @@ def make_card(server):
 def clear_screen():
     screen = Screen()
     screen.blank()
+
+
+@cli.command()
+def read():
+    screen = Screen()
+    rfid = RFID()
+    line_length = 19
+    try:
+        while True:
+            try:
+                card_id, data = rfid.read()
+            except Exception as e:
+                click.echo(e)
+                screen.write(e)
+            else:
+                click.echo(f"{card_id}: {data}")
+                lines = [card_id]
+                lines.extend(
+                    [
+                        data[i : i + line_length]
+                        for i in range(0, len(data), line_length)
+                    ]
+                )
+                screen.write(*lines)
+                time.sleep(1)
+    finally:
+        screen.blank()
+        screen.write()
+        GPIO.cleanup()
